@@ -67,7 +67,7 @@ export const UserList = () => {
               <td>{userpasswordArray[ind].value}</td>
               <td>{usertypeArray[ind].value}</td>
               <td>
-              <Button variant="danger" onClick={() => deleteUser(usernameArray.value)}>Sil</Button>
+              <Button variant="danger" onClick={() => deleteUser(usernameArray.value)}>Delete</Button>
               </td>
               <td>
               </td>
@@ -229,7 +229,7 @@ export const UserList = () => {
                   <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                       <Nav.Link href="/home">Home</Nav.Link>
-                      <Nav.Link href="#link">Orders</Nav.Link>
+                      <Nav.Link href="/orders">Orders</Nav.Link>
                       <NavDropdown title="Actions" id="basic-nav-dropdown">
                         <NavDropdown.Item href="/UserList" >
                           UserList
@@ -250,7 +250,7 @@ export const UserList = () => {
                   </Navbar.Collapse>
                 </Container>
               </Navbar>
-              <h3 className="centerd-flex justify-content-" >Kullanıcı Listesi</h3>
+              <h3 className="centerd-flex justify-content-" >User List</h3>
               <div className="container mt-3">
               <table className="table table-striped">
                 <thead>
@@ -259,10 +259,10 @@ export const UserList = () => {
                     <th>Password</th>
                     <th>userType</th>
                     <th>
-                      <Button onClick={handleShow}>Ekle</Button>
+                      <Button onClick={handleShow}>Add</Button>
                     </th>
                     <th>
-                <Button variant="secondary" onClick={handleShow2}>Düzenle</Button>
+                <Button variant="secondary" onClick={handleShow2}>Update</Button>
                     </th>
                   </tr>
                 </thead>

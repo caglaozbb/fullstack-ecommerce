@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Container, Nav, Navbar, NavDropdown, Button, Modal } from "react-bootstrap";
+import React from "react";
+import { Container, Nav, Navbar, NavDropdown, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import stringInject from "stringinject";
 import axios from "axios";
@@ -28,7 +28,7 @@ export const Home = () => {
                 <Navbar.Collapse id="basic-navbar-nav">
                   <Nav className="me-auto">
                     <Nav.Link href="/home">Home</Nav.Link>
-                    <Nav.Link href="#link">Orders</Nav.Link>
+                    <Nav.Link href="/orders">Orders</Nav.Link>
                     <NavDropdown title="Actions" id="basic-nav-dropdown">
                       <NavDropdown.Item href="/UserList" >
                         UserList
