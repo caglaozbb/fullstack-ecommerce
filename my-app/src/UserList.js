@@ -5,7 +5,6 @@ import stringInject from "stringinject";
 import axios from "axios";
 
 export const UserList = () => {
-    console.log("userlist")
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
 
@@ -15,15 +14,21 @@ export const UserList = () => {
     window.sessionStorage.setItem("auth", "false");
     window.location.reload();
   }
-    ////userekle-sil////////
+    ////userekle-sil-duzenle////////
+  const [UserID,setUserID] = useState();
   const [UserName,setUserName] = useState("");
   const [UserPass,setUserPass] = useState("");
   const [UserType,setUserType] = useState("");
 
-  ////modal////////
+  ////modal user ekle////////
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+    ////modal user düzenle////////
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow2 = () => setShow2(true);
 
   ///userlistesial///
   useEffect(() => {
@@ -62,7 +67,9 @@ export const UserList = () => {
               <td>{userpasswordArray[ind].value}</td>
               <td>{usertypeArray[ind].value}</td>
               <td>
-                <Button variant="danger" onClick={deleteUser}>Sil</Button>
+              <Button variant="danger" onClick={() => deleteUser(usernameArray.value)}>Sil</Button>
+              </td>
+              <td>
               </td>
             </tr>,
           ]);
@@ -117,6 +124,7 @@ export const UserList = () => {
 
   };
 
+  /////User sil/////////
     function deleteUser (UserName2, UserPass2, UserType2){
         console.log("deleteuser");
 
@@ -134,6 +142,7 @@ export const UserList = () => {
       {UserName2: UserName2, UserPass2: UserPass2, UserType2:UserType2}
       );
       console.log(xmls)
+      axios
       .post("https://localhost:44329/WebService1.asmx?WSDL", xmls,{
         headers:{
             "Content-Type": "text/xml",
@@ -154,6 +163,54 @@ export const UserList = () => {
     .catch((err) => {
       console.log(err);
     });
+    };
+
+    //////user güncelle/////
+
+    function updateUser(){
+
+    var UserID2 = UserID
+    var UserName2 = UserName
+    var UserPass2 = UserPass
+    var UserType2 = UserType
+    let xmls = stringInject(
+      '<?xml version="1.0" encoding="utf-8"?>'+
+        '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
+          '<soap:Body>'+
+            '<UpdateUser xmlns="http://tempuri.org/">'+
+              '<UserID>{UserID2}</UserID>'+
+              '<UserName>{UserName2}</UserName>'+
+              '<UserPassword>{UserPass2}</UserPassword>'+
+              '<UserType>{UserType2}</UserType>'+
+            '</UpdateUser>'+
+          '</soap:Body>'+
+        '</soap:Envelope>',
+  {UserID2: UserID2, UserName2: UserName2, UserPass2: UserPass2, UserType2: UserType2}
+  );
+  console.log(xmls)
+  axios
+  .post("https://localhost:44329/WebService1.asmx?WSDL", xmls,{
+      headers:{
+          "Content-Type": "text/xml",
+      },
+  })
+  .then((res) => {
+    console.log(res);
+    // console.log("Test");
+    var resStr = JSON.stringify(res.data);
+    var XMLParser = require("react-xml-parser");
+    var xml = new XMLParser().parseFromString(resStr);
+    var authArray = xml.getElementsByTagName("UpdateUserResult");
+    console.log(authArray);
+    var auth = authArray[0].value;
+    console.log(auth);
+    
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+
     };
 
     return(
@@ -204,7 +261,9 @@ export const UserList = () => {
                     <th>
                       <Button onClick={handleShow}>Ekle</Button>
                     </th>
-                    <th></th>
+                    <th>
+                <Button variant="secondary" onClick={handleShow2}>Düzenle</Button>
+                    </th>
                   </tr>
                 </thead>
                 {rows.map((entry) => (
@@ -218,11 +277,11 @@ export const UserList = () => {
           <Modal.Title>Add a new User</Modal.Title>
         </Modal.Header>
         <Modal.Body>  
-          <input type="text" class="form-control" placeholder="User Name" onChange={e=>setUserName(e.target.value)}/>
+          <input type="text" className="form-control" placeholder="User Name" onChange={e=>setUserName(e.target.value)}/>
           <br></br>
-          <input type="text" class="form-control" placeholder="User Password" onChange={e=>setUserPass(e.target.value)}/>
+          <input type="text" className="form-control" placeholder="User Password" onChange={e=>setUserPass(e.target.value)}/>
           <br></br>
-          <input type="text" class="form-control" placeholder="User Type" onChange={e=>setUserType(e.target.value)}/>
+          <input type="text" className="form-control" placeholder="User Type" onChange={e=>setUserType(e.target.value)}/>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
@@ -233,6 +292,30 @@ export const UserList = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update the user</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>  
+          <input type="text" className="form-control" placeholder="User ID" onChange={e=>setUserID(e.target.value)}/>
+          <br></br>
+          <input type="text" className="form-control" placeholder="User Name" onChange={e=>setUserName(e.target.value)}/>
+          <br></br>
+          <input type="text" className="form-control" placeholder="User Password" onChange={e=>setUserPass(e.target.value)}/>
+          <br></br>
+          <input type="text" className="form-control" placeholder="User Type" onChange={e=>setUserType(e.target.value)}/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose2}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={updateUser}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
 
             </Container>
           ) : (
