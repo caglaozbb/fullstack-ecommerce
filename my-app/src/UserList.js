@@ -25,20 +25,20 @@ export const UserList = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-    ////modal user düzenle////////
-    const [show2, setShow2] = useState(false);
-    const handleClose2 = () => setShow2(false);
-    const handleShow2 = () => setShow2(true);
+  ////modal user düzenle////////
+  const [show2, setShow2] = useState(false);
+  const handleClose2 = () => setShow2(false);
+  const handleShow2 = () => setShow2(true);
 
   ///userlistesial///
   useEffect(() => {
     let xmls = stringInject(
-      '<?xml version="1.0" encoding="utf-8"?>' +
-        '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">' +
-        "<soap:Body>" +
-        '<GetUsers xmlns="http://tempuri.org/" />' +
-        "</soap:Body>" +
-        "</soap:Envelope>",
+      '<?xml version="1.0" encoding="utf-8"?>'+
+      '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
+        '<soap:Body>'+
+          '<GetUsers xmlns="http://tempuri.org/" />'+
+        '</soap:Body>'+
+      '</soap:Envelope>',
       {}
     );
     axios
@@ -51,6 +51,7 @@ export const UserList = () => {
         var resStr = JSON.stringify(res.data);
         var XMLParser = require("react-xml-parser");
         var xml = new XMLParser().parseFromString(resStr);
+        var userIDArray = xml.getElementsByTagName("userID");
         var usernameArray = xml.getElementsByTagName("userName");
         var userpasswordArray = xml.getElementsByTagName("password");
         var usertypeArray = xml.getElementsByTagName("userType");
@@ -62,7 +63,8 @@ export const UserList = () => {
           setRows((prewRows) => [
             ...prewRows,
 
-            <tr>
+              <tr>
+              <td>{userIDArray[ind].value}</td>
               <td>{usernameArray[ind].value}</td>
               <td>{userpasswordArray[ind].value}</td>
               <td>{usertypeArray[ind].value}</td>
@@ -70,10 +72,11 @@ export const UserList = () => {
               <Button variant="danger" onClick={() => deleteUser(usernameArray.value)}>Delete</Button>
               </td>
               <td>
+              <Button variant="secondary" onClick={handleShow2}>Update</Button>
               </td>
             </tr>,
-          ]);
-        }
+            ]);
+        } 
       })
 
       .catch((err) => {
@@ -124,8 +127,8 @@ export const UserList = () => {
 
   };
 
-  /////User sil/////////
-    function deleteUser (UserName2, UserPass2, UserType2){
+  /////User sil?????/////////
+    function deleteUser (UserID){
         console.log("deleteuser");
 
         let xmls = stringInject(
@@ -139,7 +142,7 @@ export const UserList = () => {
                 '</DeleteUsers>'+
               '</soap:Body>'+
             '</soap:Envelope>',
-      {UserName2: UserName2, UserPass2: UserPass2, UserType2:UserType2}
+      {UserID}
       );
       console.log(xmls)
       axios
@@ -255,6 +258,7 @@ export const UserList = () => {
               <table className="table table-striped">
                 <thead>
                   <tr>
+                    <th>UserID</th>
                     <th>UserName</th>
                     <th>Password</th>
                     <th>userType</th>
@@ -262,7 +266,6 @@ export const UserList = () => {
                       <Button onClick={handleShow}>Add</Button>
                     </th>
                     <th>
-                <Button variant="secondary" onClick={handleShow2}>Update</Button>
                     </th>
                   </tr>
                 </thead>
