@@ -7,35 +7,34 @@ import axios from "axios";
 export const Orders = () => {
 
     const navigate = useNavigate();
-
     const [rows, setRows] = useState([]);
 
-    //cıkısyap
+    //cikis yap fonksiyonu
     function logOut() {
         window.sessionStorage.clear();
         window.sessionStorage.setItem("auth", "false");
         window.location.reload();
     }
 
-    //Order ekle//
+    //Araba bilgileri listesinin degiskenleri
     const [CarID,setCarID] = useState();
     const [CarModel,setCarModel] = useState("");
     const [CarColor,setCarColor] = useState("");
     const [CarFuelType,setCarFuelType] = useState("");
     const [CustomerID,setCustomerID] = useState();
-    const [CarDate,setCarDate] = useState();
+    const [CarDate,setCarDate] = useState("");
 
-
-    ////modal siparis ekle////////
+    //Modal ekraninin acilip kapanmasi (addOrder)
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    // ////modal siparis düzenle////////
-    // const [show2, setShow2] = useState(false);
-    // const handleClose2 = () => setShow2(false);
-    // const handleShow2 = () => setShow2(true);
+    //Modal ekraninin acilip kapanması (updateOrder)
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow2 = () => setShow2(true);
 
+    //Arabalarin bilgilerinin listesinin alinmasi (sayfa yuklendiginde tetikleyiciye gerek kalmadan calisir)
     useEffect(() => {
       let xmls = stringInject(
         '<?xml version="1.0" encoding="utf-8"?>'+
@@ -62,14 +61,15 @@ export const Orders = () => {
         var carFuelTypeArray = xml.getElementsByTagName("carFuelType");
         var customerIDArray = xml.getElementsByTagName("customerID");
         var carDateArray = xml.getElementsByTagName("carDate");
-console.log("test");
-console.log(carModelArray.length);
-        console.log(carIDArray[0].value);
-        console.log(carModelArray[0].value);
-        console.log(carColorArray[0].value);
-        console.log(carFuelTypeArray[0].value);
-        console.log(customerIDArray[0].value);
-        console.log(carDateArray[0].value);
+        console.log("test");
+        // console.log(carModelArray.length);
+        // console.log(carIDArray[0].value);
+        // console.log(carModelArray[0].value);
+        // console.log(carColorArray[0].value);
+        // console.log(carFuelTypeArray[0].value);
+        // console.log(customerIDArray[0].value);
+        // console.log(carDateArray[0].value);
+        // arabalarin bilgilerinin bulundugu listeyi alir
 
         setRows([]);
         for (let ind = 0; ind < carModelArray.length; ind++) {
@@ -85,7 +85,7 @@ console.log(carModelArray.length);
                 <td>{customerIDArray[ind].value}</td>
                 <td>{carDateArray[ind].value}</td>
                 <td>
-                <Button variant="danger">Delete</Button> 
+                <Button variant="danger" onClick={() => deleteOrder(carIDArray[ind].value)}>Delete</Button> 
                 </td>
                 <td>
                 </td>
@@ -98,13 +98,14 @@ console.log(carModelArray.length);
       });
     }, []);
 
-    //orderekle fonksiyonu
+    //siparis ekleme fonksiyonu
     function addOrder(){
       var CarModel2 = CarModel
       var CarColor2 = CarColor
       var CarFuelType2 = CarFuelType
       var CustomerID2 = CustomerID
       var CarDate2 = CarDate
+
       let xmls = stringInject(
         '<?xml version="1.0" encoding="utf-8"?>'+
           '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
@@ -133,21 +134,111 @@ console.log(carModelArray.length);
         var resStr = JSON.stringify(res.data);
         var XMLParser = require("react-xml-parser");
         var xml = new XMLParser().parseFromString(resStr);
-        var authArray = xml.getElementsByTagName("AddCarResult");
+        var authArray = xml.getElementsByTagName("DeleteCarsResult");
         console.log(authArray);
         var auth = authArray[0].value;
         console.log(auth);
-      })
+        }
+      )
       .catch((err) => {
         console.log(err);
       });
     };
 
+    function updateOrder(){
+
+      var CarID2 = CarID
+      var CarModel2 = CarModel
+      var CarColor2 = CarColor
+      var CarFuelType2 = CarFuelType
+      var CustomerID2 = CustomerID
+      var CarDate2 = CarDate
+      let xmls = stringInject(
+        '<?xml version="1.0" encoding="utf-8"?>'+
+          '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
+            '<soap:Body>'+
+              '<UpdateCar xmlns="http://tempuri.org/">'+
+               '<CarID>{CarID2}</CarID>'+
+               '<CarModel>{CarModel2}</CarModel>'+
+               '<CarColor>{CarColor2}</CarColor>'+
+               '<CarFuelType>{CarFuelType2}</CarFuelType>'+
+               '<CustomerID>{CustomerID2}</CustomerID>'+
+               '<CarDate>{CarDate2}</CarDate>'+
+              '</UpdateCar>'+
+            '</soap:Body>'+
+          '</soap:Envelope>',
+          { CarID2:CarID2, CarModel2:CarModel2, CarColor2:CarColor2, CarFuelType2:CarFuelType2, CustomerID2:CustomerID2,CarDate2:CarDate2}
+      );
+      console.log(xmls)
+    axios
+    .post("https://localhost:44329/WebService1.asmx?WSDL", xmls,{
+        headers:{
+            "Content-Type": "text/xml",
+        },
+    })
+    .then((res) => {
+      console.log(res);
+      // console.log("Test");
+      var resStr = JSON.stringify(res.data);
+      var XMLParser = require("react-xml-parser");
+      var xml = new XMLParser().parseFromString(resStr);
+      var authArray = xml.getElementsByTagName("UpdateCarResult");
+      console.log(authArray);
+      var auth = authArray[0].value;
+      console.log(auth);
+      
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  };
+
+  //Siparis silme
+  function deleteOrder (CarID){
+     console.log("deleteorder");
+     var CarID2 = CarID
+     let xmls = stringInject(
+        '<?xml version="1.0" encoding="utf-8"?>'+
+          '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
+            '<soap:Body>'+
+             '<DeleteCars xmlns="http://tempuri.org/">'+
+                '<CarID>{CarID2}</CarID>'+
+             '</DeleteCars>'+
+            '</soap:Body>'+
+          '</soap:Envelope>',
+        {CarID2:CarID2}
+      );
+      console.log(xmls)
+      axios
+      .post("https://localhost:44329/WebService1.asmx?WSDL", xmls,{
+      headers:{
+          "Content-Type": "text/xml",
+        },
+    })
+    .then((res) => {
+      console.log(res);
+      // console.log("Test");
+      var resStr = JSON.stringify(res.data);
+      var XMLParser = require("react-xml-parser");
+      var xml = new XMLParser().parseFromString(resStr);
+      var authArray = xml.getElementsByTagName("DeleteCarsResult");
+      console.log(authArray);
+      var auth = authArray[0].value;
+      console.log(auth);
+  
+    })
+    .catch((err) => {
+     console.log(err);
+     });
+  };
+
+  
 
     return(
         <Container>
         {window.sessionStorage.getItem("auth") === "true" ? (
           window.sessionStorage.getItem("UserType") === "true" ? (
+            //admin ise
             <Container>
               <Navbar bg="light" expand="lg">
                 <Container>
@@ -192,7 +283,7 @@ console.log(carModelArray.length);
                       <Button onClick={handleShow}>Add</Button>
                     </th>
                     <th>
-                 <Button variant="secondary">Update</Button> 
+                 <Button variant="secondary" onClick={handleShow2}>Update</Button> 
                     </th>
                   </tr>
                 </thead>
@@ -202,55 +293,49 @@ console.log(carModelArray.length);
               </table>
             </div>
             
-             <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add a new Order</Modal.Title>
-        </Modal.Header>
-         <Modal.Body>  
-          <input type="text" className="form-control" placeholder="Car model" onChange={e=>setCarModel(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="Car Color" onChange={e=>setCarColor(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="Car Fuel Type" onChange={e=>setCarFuelType(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="Customer ID" onChange={e=>setCustomerID(e.target.value)}/> 
-          <br></br>
-          <input type="text" className="form-control" placeholder="Car Delivery Date" onChange={e=>setCarDate(e.target.value)}/> 
-        </Modal.Body> 
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={addOrder}>
-            Save Changes
-          </Button> 
-        </Modal.Footer>
-      </Modal>
-{/* 
-      <Modal show={show2} onHide={handleClose2}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update the Order</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>  
-          <input type="text" className="form-control" placeholder="User ID" onChange={e=>setCarID(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="User Name" onChange={e=>setCarModel(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="User Password" onChange={e=>setCarColor(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="User Type" onChange={e=>setCarFuelType(e.target.value)}/>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose2}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={updateOrder}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>  */}
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+               <Modal.Title>Add a new Order</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>  
+                <input type="text" className="form-control" placeholder="Car model" onChange={e=>setCarModel(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="Car Color" onChange={e=>setCarColor(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="Car Fuel Type" onChange={e=>setCarFuelType(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="Customer ID" onChange={e=>setCustomerID(e.target.value)}/> 
+                <br></br>
+                <input type="text" className="form-control" placeholder="Car Delivery Date" onChange={e=>setCarDate(e.target.value)}/> 
+              </Modal.Body> 
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>Close</Button>
+                <Button variant="primary" onClick={addOrder}>Save Order</Button> 
+              </Modal.Footer>
+            </Modal>
 
-
+            <Modal show={show2} onHide={handleClose2}>
+              <Modal.Header closeButton>
+                <Modal.Title>Update the Order</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>  
+                <input type="text" className="form-control" placeholder="Car ID" onChange={e=>setCarID(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="Car Model" onChange={e=>setCarModel(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="Car Color" onChange={e=>setCarColor(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="Car Fuel Type" onChange={e=>setCarFuelType(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="Customer ID" onChange={e=>setCustomerID(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="Car Date" onChange={e=>setCarDate(e.target.value)}/>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose2}>Close</Button>
+                <Button variant="primary" onClick={updateOrder}>Update Order</Button>
+              </Modal.Footer>
+            </Modal>  
             </Container>
           ) : (
             //admin değilse
