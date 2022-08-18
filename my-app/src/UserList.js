@@ -8,30 +8,31 @@ export const UserList = () => {
     const navigate = useNavigate();
     const [rows, setRows] = useState([]);
 
-  //cıkısyap
-  function logOut() {
+    //Cikis yap
+    function logOut() {
     window.sessionStorage.clear();
     window.sessionStorage.setItem("auth", "false");
     window.location.reload();
-  }
-    ////userekle-sil-duzenle////////
-  const [UserID,setUserID] = useState();
-  const [UserName,setUserName] = useState("");
-  const [UserPass,setUserPass] = useState("");
-  const [UserType,setUserType] = useState("");
+    };
 
-  ////modal user ekle////////
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+    //kullanici degiskenlerinin atanmasi
+    const [UserID,setUserID] = useState();
+    const [UserName,setUserName] = useState("");
+    const [UserPass,setUserPass] = useState("");
+    const [UserType,setUserType] = useState("");
 
-  ////modal user düzenle////////
-  const [show2, setShow2] = useState(false);
-  const handleClose2 = () => setShow2(false);
-  const handleShow2 = () => setShow2(true);
+    ////modal ekraninin acilip kapanmasi (addUser)
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
-  ///userlistesial///
-  useEffect(() => {
+    ////modal ekraninin acilip kapanmasi (updateUser)
+    const [show2, setShow2] = useState(false);
+    const handleClose2 = () => setShow2(false);
+    const handleShow2 = () => setShow2(true);
+
+    //Kullanici bilgilerinin listesini alma (useEffect sayfa yuklenince hicbir tetikleyiciye gerek kalmadan calisir)
+    useEffect(() => {
     let xmls = stringInject(
       '<?xml version="1.0" encoding="utf-8"?>'+
       '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
@@ -39,7 +40,7 @@ export const UserList = () => {
           '<GetUsers xmlns="http://tempuri.org/" />'+
         '</soap:Body>'+
       '</soap:Envelope>',
-      {}
+    {}
     );
     axios
       .post("https://localhost:44329/WebService1.asmx?WSDL", xmls, {
@@ -55,8 +56,9 @@ export const UserList = () => {
         var usernameArray = xml.getElementsByTagName("userName");
         var userpasswordArray = xml.getElementsByTagName("password");
         var usertypeArray = xml.getElementsByTagName("userType");
-        console.log(usernameArray[0].value);
-        console.log(userpasswordArray[0].value);
+        // console.log(usernameArray[0].value);
+        // console.log(userpasswordArray[0].value);
+        // kullanici bilgilerinin bulundugu listeyi alir
         setRows([]);
         for (let ind = 0; ind < usernameArray.length; ind++) {
           console.log(ind);
@@ -64,16 +66,12 @@ export const UserList = () => {
             ...prewRows,
 
               <tr>
-              <td>{userIDArray[ind].value}</td>
-              <td>{usernameArray[ind].value}</td>
-              <td>{userpasswordArray[ind].value}</td>
-              <td>{usertypeArray[ind].value}</td>
-              <td>
-              <Button variant="danger" onClick={() => deleteUser(usernameArray.value)}>Delete</Button>
-              </td>
-              <td>
-              <Button variant="secondary" onClick={handleShow2}>Update</Button>
-              </td>
+                <td>{userIDArray[ind].value}</td>
+                <td>{usernameArray[ind].value}</td>
+                <td>{userpasswordArray[ind].value}</td>
+                <td>{usertypeArray[ind].value}</td>
+                <td><Button variant="danger" onClick={() => deleteUser(userIDArray[ind].value)}>Delete</Button></td>
+                <td><Button variant="secondary" onClick={handleShow2}>Update</Button></td>
             </tr>,
             ]);
         } 
@@ -84,7 +82,7 @@ export const UserList = () => {
       });
   }, []);
 
-//userekle fonksiyonu
+  //Kullanici ekleme
   function addUser(){
     var UserName2 = UserName
     var UserPass2 = UserPass
@@ -102,7 +100,7 @@ export const UserList = () => {
       '</soap:Envelope>',
   {UserName2: UserName2, UserPass2: UserPass2, UserType2:UserType2}
   );
-  console.log(xmls)
+  // console.log(xmls)
   axios
   .post("https://localhost:44329/WebService1.asmx?WSDL", xmls,{
       headers:{
@@ -110,7 +108,7 @@ export const UserList = () => {
       },
   })
   .then((res) => {
-    console.log(res);
+    // console.log(res);
     // console.log("Test");
     var resStr = JSON.stringify(res.data);
     var XMLParser = require("react-xml-parser");
@@ -127,22 +125,20 @@ export const UserList = () => {
 
   };
 
-  /////User sil?????/////////
+  //Kullanici silme
     function deleteUser (UserID){
         console.log("deleteuser");
-
+        var UserID2 = UserID
         let xmls = stringInject(
-          '<?xml version="1.0" encoding="utf-8"?>'+
-            '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
-              '<soap:Body>'+
-                '<DeleteUsers xmlns="http://tempuri.org/">'+
-                  '<UserName>{UserName2}</UserName>'+
-                  '<UserPassword>{UserPass2}</UserPassword>'+
-                  '<UserType>{UserType2}</UserType>'+
-                '</DeleteUsers>'+
-              '</soap:Body>'+
-            '</soap:Envelope>',
-      {UserID}
+        '<?xml version="1.0" encoding="utf-8"?>'+
+          '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
+            '<soap:Body>'+
+              '<DeleteUsers xmlns="http://tempuri.org/">'+
+              '<UserID>{UserID2}</UserID>'+
+              '</DeleteUsers>'+
+            '</soap:Body>'+
+          '</soap:Envelope>',
+      {UserID2:UserID2}
       );
       console.log(xmls)
       axios
@@ -168,7 +164,7 @@ export const UserList = () => {
     });
     };
 
-    //////user güncelle/////
+    //Kullanici guncelleme
 
     function updateUser(){
 
@@ -190,7 +186,7 @@ export const UserList = () => {
         '</soap:Envelope>',
   {UserID2: UserID2, UserName2: UserName2, UserPass2: UserPass2, UserType2: UserType2}
   );
-  console.log(xmls)
+  // console.log(xmls)
   axios
   .post("https://localhost:44329/WebService1.asmx?WSDL", xmls,{
       headers:{
@@ -198,7 +194,7 @@ export const UserList = () => {
       },
   })
   .then((res) => {
-    console.log(res);
+    // console.log(res);
     // console.log("Test");
     var resStr = JSON.stringify(res.data);
     var XMLParser = require("react-xml-parser");
@@ -217,13 +213,10 @@ export const UserList = () => {
     };
 
     return(
-        <Container>
+      <Container>
         {window.sessionStorage.getItem("auth") === "true" ? (
           window.sessionStorage.getItem("UserType") === "true" ? (
-            // {console.log(window.sessionStorage.getItem('auth'))}
-  
-            //adminse
-  
+            //Admin - normal kullanici kontrolu (adminse)
             <Container>
               <Navbar bg="light" expand="lg">
                 <Container>
@@ -276,53 +269,43 @@ export const UserList = () => {
             </div>
             
             <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add a new User</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>  
-          <input type="text" className="form-control" placeholder="User Name" onChange={e=>setUserName(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="User Password" onChange={e=>setUserPass(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="User Type" onChange={e=>setUserType(e.target.value)}/>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={addUser}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
+              <Modal.Header closeButton>
+                <Modal.Title>Add a new User</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>  
+                <input type="text" className="form-control" placeholder="User Name" onChange={e=>setUserName(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="User Password" onChange={e=>setUserPass(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="User Type" onChange={e=>setUserType(e.target.value)}/>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>Close</Button>
+                <Button variant="primary" onClick={addUser}>Save Changes</Button>
+              </Modal.Footer>
+            </Modal>
 
-      <Modal show={show2} onHide={handleClose2}>
-        <Modal.Header closeButton>
-          <Modal.Title>Update the user</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>  
-          <input type="text" className="form-control" placeholder="User ID" onChange={e=>setUserID(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="User Name" onChange={e=>setUserName(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="User Password" onChange={e=>setUserPass(e.target.value)}/>
-          <br></br>
-          <input type="text" className="form-control" placeholder="User Type" onChange={e=>setUserType(e.target.value)}/>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose2}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={updateUser}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-
-            </Container>
+             <Modal show={show2} onHide={handleClose2}>
+                <Modal.Header closeButton>
+                <Modal.Title>Update the user</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>  
+                <input type="text" className="form-control" placeholder="User ID" onChange={e=>setUserID(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="User Name" onChange={e=>setUserName(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="User Password" onChange={e=>setUserPass(e.target.value)}/>
+                <br></br>
+                <input type="text" className="form-control" placeholder="User Type" onChange={e=>setUserType(e.target.value)}/>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose2}>Close</Button>
+                <Button variant="primary" onClick={updateUser}>Save Changes</Button>
+              </Modal.Footer>
+             </Modal>
+     </Container>
           ) : (
-            //admin değilse
+            //Normal kullanici icin
             <Navbar bg="light" expand="lg">
               <Container>
                 <Navbar.Brand href="#home">User Panel</Navbar.Brand>
