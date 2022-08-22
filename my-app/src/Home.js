@@ -55,14 +55,15 @@ export const Home = () => {
           </Container>
         ) : (
           //admin değilse
+         <Container>
           <Navbar bg="light" expand="lg">
             <Container>
-              <Navbar.Brand href="#home">User Panel</Navbar.Brand>
+              <Navbar.Brand href="/home">User Panel</Navbar.Brand>
               <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
-                  <Nav.Link href="#home">Home</Nav.Link>
-                  <Nav.Link href="#link">Order</Nav.Link>
+                  <Nav.Link href="/home">Home</Nav.Link>
+                  <Nav.Link href="/ordersuser">Orders</Nav.Link>
                   <NavDropdown title="Actions" id="basic-nav-dropdown">
                     <NavDropdown.Item href="#action/3.1">
                       Action
@@ -81,19 +82,16 @@ export const Home = () => {
                 </Nav>
               </Navbar.Collapse>
               <Navbar.Collapse className="justify-content-end">
-                <Button
-                  variant="secondary"
-                  onClick={this.logOut.bind(this)}
-                  href="/login"
-                >
-                  Log Out
-                </Button>
-              </Navbar.Collapse>
-              <div>
-              <h1 className="d-flex justify-content-center" > KULLANICI OLARAK GIRIS YAPTINIZ</h1>
-            </div>
+                  <Button variant="secondary" onClick={logOut} href="/login">
+                    Log Out
+                  </Button>
+                </Navbar.Collapse>
             </Container>
           </Navbar>
+          <div>
+             <h1 className="d-flex justify-content-center" > KULLANICI OLARAK GIRIS YAPTINIZ</h1>
+          </div>
+        </Container>
         )
       ) : (
         navigate("/Login")

@@ -5,6 +5,8 @@ import {Login} from "./Login";
 import {UserList} from "./UserList";
 import {Home} from "./Home";
 import {Orders} from "./Orders";
+import {OrdersUser} from "./OrdersUser";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 // import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 
@@ -18,7 +20,7 @@ const App = () => {
           <Route path="userlist" element={<UserList/>} />
           <Route path="home" element={<Home/>} />
           <Route path="orders" element={<Orders/>} />
-
+          <Route path="ordersuser" element={<OrdersUser/>} />
       </Routes>
     </BrowserRouter>
   )

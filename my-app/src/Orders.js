@@ -62,13 +62,6 @@ export const Orders = () => {
         var customerIDArray = xml.getElementsByTagName("customerID");
         var carDateArray = xml.getElementsByTagName("carDate");
         console.log("test");
-        // console.log(carModelArray.length);
-        // console.log(carIDArray[0].value);
-        // console.log(carModelArray[0].value);
-        // console.log(carColorArray[0].value);
-        // console.log(carFuelTypeArray[0].value);
-        // console.log(customerIDArray[0].value);
-        // console.log(carDateArray[0].value);
         // arabalarin bilgilerinin bulundugu listeyi alir
 
         setRows([]);
@@ -247,7 +240,7 @@ export const Orders = () => {
                   <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                       <Nav.Link href="/home">Home</Nav.Link>
-                      <Nav.Link href="/orders">Orders</Nav.Link>
+                      <Nav.Link href="/ordersuser">Orders</Nav.Link>
                       <NavDropdown title="Actions" id="basic-nav-dropdown">
                         <NavDropdown.Item href="/UserList" >
                           UserList
@@ -341,12 +334,12 @@ export const Orders = () => {
             //admin değilse
             <Navbar bg="light" expand="lg">
               <Container>
-                <Navbar.Brand href="#home">User Panel</Navbar.Brand>
+                <Navbar.Brand href="/home">User Panel</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                   <Nav className="me-auto">
-                    <Nav.Link href="#home">Home</Nav.Link>
-                    <Nav.Link href="#link">Order</Nav.Link>
+                  <Nav.Link href="/home">Home</Nav.Link>
+                    <Nav.Link href="/orders">Orders</Nav.Link>
                     <NavDropdown title="Actions" id="basic-nav-dropdown">
                       <NavDropdown.Item href="#action/3.1">
                         Action
@@ -365,11 +358,7 @@ export const Orders = () => {
                   </Nav>
                 </Navbar.Collapse>
                 <Navbar.Collapse className="justify-content-end">
-                  <Button
-                    variant="secondary"
-                    onClick={this.logOut.bind(this)}
-                    href="/login"
-                  >
+                  <Button variant="secondary" onClick={logOut} href="/login">
                     Log Out
                   </Button>
                 </Navbar.Collapse>

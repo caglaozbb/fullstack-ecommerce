@@ -48,9 +48,7 @@ export const Login = () => {
                 console.log(authArray);
                 var auth = authArray[0].value;
                 console.log(auth);
-                
-                // sessionStorage.setItem("name", "admin");
-                // sessionStorage.setItem("pass", "admin1");
+
                  if(auth==='1'){
                    console.log('Giris Basarili');
                    window.sessionStorage.setItem("auth","true");
@@ -106,8 +104,6 @@ export const Login = () => {
               var UserType = UserTypeArray[0].value;
               console.log(UserType);
               
-              // sessionStorage.setItem("name", "admin");
-              // sessionStorage.setItem("pass", "admin1");
                if(UserType==="admin"){
                  console.log('Admin Giris');
                  window.sessionStorage.setItem("UserType","true");
@@ -125,6 +121,53 @@ export const Login = () => {
           });
             
   };
+
+  function userID() {
+    console.log("test userID")
+    // console.log(UserName)
+    // console.log(UserPass)
+    var UserName2 = UserName
+    var UserPass2 = UserPass
+            let xmls = stringInject(
+              '<?xml version="1.0" encoding="utf-8"?>'+
+               '<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">'+
+                '<soap:Body>'+
+                    '<userID xmlns="http://tempuri.org/">'+
+                      '<UserName>{UserName2}</UserName>'+
+                      '<UserPassword>{UserPass2}</UserPassword>'+
+                    '</userID>'+
+                  '</soap:Body>'+
+                '</soap:Envelope>',
+        { UserName2: UserName2, UserPass2: UserPass2}
+    );
+    console.log(xmls)
+    axios
+        .post("https://localhost:44329/WebService1.asmx?WSDL", xmls,{
+            headers:{
+                "Content-Type": "text/xml",
+            },
+        })
+        .then((res) => {
+            console.log(res);
+            console.log("Test userID2");
+            var resStr = JSON.stringify(res.data);
+            var XMLParser = require("react-xml-parser");
+            var xml = new XMLParser().parseFromString(resStr);
+            var UserIDArray = xml.getElementsByTagName("UserIDResult");
+            console.log(UserIDArray);
+            var UserID = UserIDArray[0].value;
+            console.log(UserID);
+            window.sessionStorage.setItem("UserID",UserID);
+            console.log(UserID);
+
+            
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+          
+};
+
     return (
       <Container>    
       <Row>
@@ -139,7 +182,10 @@ export const Login = () => {
               <Form.Control type="password" placeholder="Enter Password"  onChange={e=>setUserPass(e.target.value)}></Form.Control>
             </Form.Group>
             <br></br>
-            <Button variant="primary" onClick={handleBilgiAl} > Login </Button>
+            <Button variant="primary" onClick={()=>{
+              handleBilgiAl()
+              userID()
+            }}> Login </Button>
           </Form>
         </Col>
       </Row>  
