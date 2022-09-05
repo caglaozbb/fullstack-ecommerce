@@ -7,10 +7,10 @@
 This website is an e-Commerce website that enables users to order vehicles. Admins can register users with their own username and password, add orders to users cart.
 
 ## Contents
-[General Info](https://github.com/caglaozbb/fullstack-ecommerce#GeneralInfo)
-[Installing]
-[Built With]
-[ScreenShots]
++ [General Info](https://github.com/caglaozbb/fullstack-ecommerce#general-info)
++ [Installing]
++ [Built With]
++ [ScreenShots]
 
 ## General Info
 
