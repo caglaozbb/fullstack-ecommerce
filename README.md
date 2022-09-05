@@ -8,7 +8,7 @@ This website is an e-Commerce website that enables users to order vehicles. Admi
 
 ## Contents
 + [General Info](https://github.com/caglaozbb/fullstack-ecommerce#general-info)
-+ [Installing]
++ [Installing](https://github.com/caglaozbb/fullstack-ecommerce#installing)
 + [Built With]
 + [ScreenShots]
 
