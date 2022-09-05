@@ -46,7 +46,8 @@ You can filter the orders.
 
 ## Screen Shots
 
-##📬 Contact
+## 📬 Contact
+
 <a href="https://www.linkedin.com/in/%C3%A7a%C4%9Fla-%C3%B6zbaba-b600ab214/">
     <img src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Badge"/>
   </a>
