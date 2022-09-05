@@ -44,10 +44,13 @@ You can filter the orders.
 + Javascript
 + Bootstrap5
 
-## Screen Shots
 
-## 📬 Contact
+## 📬 Contact Me
+
+If you want to contact me, you can reach me through below.
 
 <a href="https://www.linkedin.com/in/%C3%A7a%C4%9Fla-%C3%B6zbaba-b600ab214/">
     <img src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Badge"/>
   </a>
+
+## Screen Shots
