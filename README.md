@@ -53,5 +53,4 @@ If you want to contact me, you can reach me through below.
     <img src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Badge"/>
   </a>
 
-## Screen Shots
 
